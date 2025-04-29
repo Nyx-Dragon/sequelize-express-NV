@@ -1,14 +1,25 @@
 const Book = require("../models/Book");
-//const db = require("../db")
 
-const getBooks = (req, res) => {
-    res.send("Test")
-}
+const getBooks = async (req, res) => {
+  const books = await Book.findAll();
+  res.json(books);
+};
 
 const createBook = async (req, res) => {
-    const createdBook = await Book.create({title: "Cinco semanas en globo", description: "Hola", length: 350})
-    res.send(createdBook.id)
-}
+  const book = await Book.create(req.body);
+  res.status(201).json(book);
+};
 
-exports.getBooks = getBooks
-exports.createBook = createBook
+const updateBook = async (req, res) => {
+  const { id } = req.params;
+  const book = await Book.update(req.body, { where: { id } });
+  res.json(book);
+};
+
+const deleteBook = async (req, res) => {
+  const { id } = req.params;
+  await Book.destroy({ where: { id } });
+  res.status(204).send();
+};
+
+module.exports = { getBooks, createBook, updateBook, deleteBook };
